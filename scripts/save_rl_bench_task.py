@@ -1,15 +1,30 @@
+import os
+import numpy as np
+import argparse
+
 from rlbench.environment import Environment
 from rlbench.action_modes import ArmActionMode, ActionMode
 from rlbench.observation_config import ObservationConfig
+
 from romi.movement_primitives import Group
-import argparse
-
-import numpy as np
 from romi.trajectory import NamedTrajectory
+
 from core.config import config
+from core.fancy_print import f_print, PTYPE
 
 
-def  collect_rl_bench_trajectories(task_class, n_movements):
+def create_folder(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        f_print("The directory exists. Files will be overwritten." % path, PTYPE.warning)
+        return False
+    else:
+        f_print("Successfully created the directory %s." % path, PTYPE.ok_green)
+        return True
+
+
+def collect_rl_bench_trajectories(task_class, n_movements):
         """
         Learn the Movement from demonstration.
 
@@ -42,12 +57,12 @@ def  collect_rl_bench_trajectories(task_class, n_movements):
 
         lengths = []
 
-        print("Start Demo")
+        f_print("Start Simulation", PTYPE.ok_green)
         demos = task.get_demos(n_movements, live_demos=live_demos)
-        print("End Demo")
+        f_print("End Simulations", PTYPE.ok_green)
 
         init = True
-        for demo in demos:
+        for n_d, demo in enumerate(demos):
             trajectory = NamedTrajectory(*group.refs)
             t = 0
             for ob in demo:
@@ -63,7 +78,9 @@ def  collect_rl_bench_trajectories(task_class, n_movements):
                 t += 1
             lengths.append(t/200.)
             trajectories.append(trajectory)
+            f_print("DEMO %d" % n_d, PTYPE.ok_blue)
 
+        create_folder("experiments/rl_bench%s" % task_name)
         for i, trajectory in enumerate(trajectories):
             trajectory.save("datasets/rl_bench/%s/trajectory_%d" % (task_name, i))
         for i, state in enumerate(states):
@@ -87,6 +104,5 @@ def get_arguments():
 
 if __name__ == "__main__":
     args = get_arguments()
-
     collect_rl_bench_trajectories(config[args.task_name]["task_class"], args.n_demos)
 
