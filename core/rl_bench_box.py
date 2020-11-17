@@ -39,10 +39,15 @@ class RLBenchBox(TaskInterface):
     def get_context_dim(self):
         return self._state_dim
 
+    def get_dof(self):
+        return 8    # 7 joints plus the gripper
+
     def read_context(self):
         return self._obs[1].task_low_dim_state
 
     def get_demonstrations(self, n: int):
+        # TODO: include n
+        # TODO: give trajectories instead of parameters!!!
         file = "parameters/%s_%d.npy" % (self.task.get_name(), self._space.n_features)
         try:
             return np.load(file)
