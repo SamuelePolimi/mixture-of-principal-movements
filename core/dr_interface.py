@@ -9,13 +9,13 @@ class DimensionalityReduction:
     """
 
     def fit(self, X: np.ndarray):
-        pass
+        raise NotImplemented()
 
     def get_observed_dim(self):
-        pass
+        raise NotImplemented()
 
     def get_latent_dim(self):
-        pass
+        raise NotImplemented()
 
     def compress(self, observed: np.ndarray):
         """
@@ -23,7 +23,7 @@ class DimensionalityReduction:
         :param observed: A matrix of observed values (a multivariate observation for each row of the matrix)
         :return: a latent space representation of the matrix
         """
-        pass
+        raise NotImplemented()
 
     def reconstruct(self, latent, noise=False):
         """
@@ -32,7 +32,7 @@ class DimensionalityReduction:
         :param noise:
         :return:
         """
-        pass
+        raise NotImplemented()
 
     def get_sample(self, noise=False):
         """
@@ -40,7 +40,7 @@ class DimensionalityReduction:
         :param noise:
         :return: (full observation, latent)
         """
-        pass
+        raise NotImplemented()
 
     def get_conditioned_sample(self, observed_values, indexes, noise=False):
         """
@@ -50,4 +50,4 @@ class DimensionalityReduction:
         :param noise:
         :return: (full observation, latent)
         """
-        pass
+        raise NotImplemented()
