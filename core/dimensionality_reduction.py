@@ -2,7 +2,7 @@ import numpy as np
 from mppca.mixture_ppca import MPPCA as ExternalMPPCA
 from sklearn.decomposition import PCA as ExternalPCA, FastICA
 
-from core.dr_interface import DimensionalityReduction
+from .dr_interface import DimensionalityReduction
 
 
 class ICA(DimensionalityReduction, FastICA):
@@ -94,7 +94,7 @@ class MPPCA(DimensionalityReduction, ExternalMPPCA):
         self.n_features_ = None
 
     def get_latent_dim(self):
-        return self.latent_dimension
+        return self.latent_dimension + 1    # the clustes is also part of the latent representation
 
     def get_observed_dim(self):
         return self.n_features_

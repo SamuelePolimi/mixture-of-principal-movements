@@ -1,7 +1,7 @@
 import numpy as np
 
-from core.tcp_protocol import Client, Server
-from core.task_interface import TaskInterface
+from .tcp_protocol import Client, Server
+from .task_interface import TaskInterface
 from romi.movement_primitives import ClassicSpace, MovementPrimitive
 from romi.groups import Group
 

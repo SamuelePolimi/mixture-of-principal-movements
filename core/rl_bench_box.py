@@ -4,7 +4,7 @@ from rlbench.environment import Environment
 from rlbench.action_modes import ArmActionMode, ActionMode
 from rlbench.observation_config import ObservationConfig
 
-from core.task_interface import TaskInterface
+from .task_interface import TaskInterface
 from romi.movement_primitives import ClassicSpace, MovementPrimitive, LearnTrajectory
 from romi.groups import Group
 from romi.trajectory import NamedTrajectory
