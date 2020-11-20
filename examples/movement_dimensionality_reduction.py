@@ -15,8 +15,8 @@ space = ClassicSpace(task_box.get_group(), 20)
 
 # dr = ICA(n_components=3)
 # dr = PCA(n_components=3)
-# TODO: debug PPCA
-dr = PPCA(latent_dimension=3)
+# dr = PPCA(latent_dimension=3)
+dr = MPPCA(latent_dimension=3, n_components=2)
 
 joint_reduction = JointReduction(space, dr)
 
@@ -25,6 +25,11 @@ movement = joint_reduction.compress(trajectories[0])
 reconstructed_trajectory = joint_reduction.reconstruct(movement, frequency=200, duration=np.sum(trajectories[0].duration))
 
 print("[JOINT] mean squared error", np.mean((reconstructed_trajectory.values - trajectories[0].values)**2))
+
+# dr = ICA(n_components=3)
+# dr = PCA(n_components=3)
+# dr = PPCA(latent_dimension=3)
+dr = MPPCA(latent_dimension=3, n_components=2)
 
 parameter_reduction = ParameterReduction(space, dr)
 

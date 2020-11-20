@@ -7,7 +7,7 @@ from rlbench.observation_config import ObservationConfig
 from .task_interface import TaskInterface
 from romi.movement_primitives import ClassicSpace, MovementPrimitive, LearnTrajectory
 from romi.groups import Group
-from romi.trajectory import NamedTrajectory
+from romi.trajectory import NamedTrajectory, LoadTrajectory
 
 
 class RLBenchBox(TaskInterface):
@@ -36,6 +36,9 @@ class RLBenchBox(TaskInterface):
         self.task = self.env.get_task(task_class)
         self._obs = None
 
+    def get_group(self):
+        return self._group
+
     def get_context_dim(self):
         return self._state_dim
 
@@ -46,13 +49,17 @@ class RLBenchBox(TaskInterface):
         return self._obs[1].task_low_dim_state
 
     def get_demonstrations(self, n: int):
-        # TODO: include n
-        # TODO: give trajectories instead of parameters!!!
-        file = "parameters/%s_%d.npy" % (self.task.get_name(), self._space.n_features)
+        """
+        Returns a list of trajectories, and the relative contexts!
+        :param n:
+        :return:
+        """
+        trajectory_files = ["datasets/rl_bench/%s/trajectory_%d.npy" % (self.task.get_name(), i) for i in range(n)]
+        context_files = ["datasets/rl_bench/%s/context_%d.npy" % (self.task.get_name(), i) for i in range(n)]
         try:
-            return np.load(file)
+            return [LoadTrajectory(file) for file in trajectory_files], [np.load(file) for file in context_files]
         except:
-            raise Exception("File %s not found. Please consider running 'dataset_generator.py'" % file)
+            raise Exception("Error in loading files!")
 
     def _stop(self, joint_gripper, previous_reward):
         if previous_reward == 0.:

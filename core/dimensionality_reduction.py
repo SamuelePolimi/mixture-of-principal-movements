@@ -15,10 +15,10 @@ class ICA(DimensionalityReduction, FastICA):
         FastICA.__init__(self, *args, **kwargs)
 
     def get_latent_dim(self):
-        return self.n_components_
+        return self.n_components
 
     def get_observed_dim(self):
-        return self.n_features_
+        return self.n_features
 
     def fit(self, X: np.ndarray):
         return FastICA.fit(self, X)
@@ -40,7 +40,7 @@ class PCA(DimensionalityReduction, ExternalPCA):
         ExternalPCA.__init__(self, *args, **kwargs)
 
     def get_latent_dim(self):
-        return self.n_components_
+        return self.n_components
 
     def get_observed_dim(self):
         return self.n_features_

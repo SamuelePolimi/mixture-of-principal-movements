@@ -34,7 +34,7 @@ class JointReduction(DimensionalityReduction):
         X = observed.values
         t = observed.duration
 
-        R = self.compress(X)
+        R = self._dimensionality_reduction.compress(X)
 
         trajectory = NamedTrajectoryBase(self._reduced_space.group.refs, t, R)
         return LearnTrajectory(self._reduced_space, trajectory)
@@ -43,6 +43,12 @@ class JointReduction(DimensionalityReduction):
         trajectory = movement.get_full_trajectory(frequency, duration)
         X = self._dimensionality_reduction.reconstruct(trajectory.values)
         return NamedTrajectoryBase(self._observation_space.group.refs, trajectory.duration, X)
+
+    def get_latent_dim(self):
+        return self._dimensionality_reduction.get_latent_dim() * self._reduced_space.n_features
+
+    def get_observed_dim(self):
+        return self._observation_space.n_params
 
 
 class PrincipalMovementPrimitive(MovementPrimitive):
@@ -54,7 +60,7 @@ class PrincipalMovementPrimitive(MovementPrimitive):
         :param parameters: a dictionary of the parameters for each dimension
         :type parameters: dict[np.nd_array]
         """
-        block_parameters = dimensionality_reduction.reconstruct(parameters)
+        block_parameters = dimensionality_reduction.reconstruct(parameters).ravel()
         params = {ref: block_parameters[movement_space.n_features * i:movement_space.n_features * (i + 1)]
                 for i, ref in enumerate(movement_space.group.refs)}
         MovementPrimitive.__init__(self, movement_space, params)
@@ -78,10 +84,16 @@ class ParameterReduction(DimensionalityReduction):
         dataset = np.array([LearnTrajectory(self._observation_space, t).get_block_params() for t in trajectories])
         self._dimensionality_reduction.fit(dataset)
 
+    def get_latent_dim(self):
+        return self._dimensionality_reduction.get_latent_dim()
+
+    def get_observed_dim(self):
+        return self._observation_space.n_params
+
     def compress(self, observed: NamedTrajectoryBase):
         movement = LearnTrajectory(self._observation_space, observed)
         compress_parameters = self._dimensionality_reduction.compress(np.array([movement.get_block_params()]))
-        return PrincipalMovementPrimitive(self._observation_space, compress_parameters)
+        return PrincipalMovementPrimitive(self._observation_space, compress_parameters, self._dimensionality_reduction)
 
     def reconstruct(self, movement: MovementPrimitive, frequency=200, duration=10., noise=False):
         return movement.get_full_trajectory(frequency, duration)

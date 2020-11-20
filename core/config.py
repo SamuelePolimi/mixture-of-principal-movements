@@ -53,7 +53,7 @@ config = {
     },
     "close_drawer": {
         "task_class": CloseDrawer,  # TODO: remove
-        "task_box": lambda headless: RLBenchBox(CloseDrawer, 94, 20, headless),
+        "task_box": lambda headless: RLBenchBox(CloseDrawer, 94, headless),
         "n_cluster": 10,
         "latent_dim": 4,
         "n_features": 20,   # TODO: remove
@@ -62,7 +62,7 @@ config = {
     },
     "water_plants": {
         "task_class": WaterPlants,  # TODO: remove
-        "task_box": lambda headless: RLBenchBox(WaterPlants, 84, 20, headless),
+        "task_box": lambda headless: RLBenchBox(WaterPlants, 84, headless),
         "n_cluster": 2,
         "latent_dim": 10,
         "n_features": 20,  # TODO: remove
@@ -71,7 +71,7 @@ config = {
     },
     "reach_target": {
         "task_class": ReachTarget,
-        "task_box": lambda headless: RLBenchBox(ReachTarget, 3, 20, headless),
+        "task_box": lambda headless: RLBenchBox(ReachTarget, 3, headless),
         "n_cluster": 6,
         "latent_dim": 3,
         "n_features": 20,
