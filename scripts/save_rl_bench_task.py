@@ -80,11 +80,13 @@ def collect_rl_bench_trajectories(task_class, n_movements):
             trajectories.append(trajectory)
             f_print("DEMO %d" % n_d, PTYPE.ok_blue)
 
-        create_folder("experiments/rl_bench%s" % task_name)
+        create_folder("datasets/rl_bench/%s" % task_name)
         for i, trajectory in enumerate(trajectories):
             trajectory.save("datasets/rl_bench/%s/trajectory_%d" % (task_name, i))
         for i, state in enumerate(states):
-            np.save("datasets/rl_bench/%s/context_%d.npz" % (task_name, i), state)
+            if i == 0:
+                print("Observation dim", state.shape[0])
+            np.save("datasets/rl_bench/%s/context_%d.npy" % (task_name, i), state)
 
         env.shutdown()
 

@@ -9,12 +9,21 @@ from romi.movement_primitives import ClassicSpace, MovementPrimitive, LearnTraje
 from romi.groups import Group
 from romi.trajectory import NamedTrajectory, LoadTrajectory
 
+_name_dicts = {
+    "ReachTarget": "reach_target",
+    "CloseDrawer": "close_drawer",
+    "WaterPlants": "water_plants",
+    "PickUpCup": "pick_up_cup",
+    "UnplugCharger": "unplug_charger",
+}
+
 
 class RLBenchBox(TaskInterface):
 
-    def __init__(self, task_class, state_dim, headless=True):
+    def __init__(self, task_class, state_dim, headless=True, name="name"):
 
         super().__init__()
+        self._name = _name_dicts[task_class.__name__]
         self._group = Group("rlbench", ["d%d" % i for i in range(7)] + ["gripper"])
         self._space = ClassicSpace(self._group)
 
@@ -29,11 +38,10 @@ class RLBenchBox(TaskInterface):
         action_mode = ActionMode(ArmActionMode.ABS_JOINT_POSITION)
         self._task_class = task_class
         self._action_mode = action_mode
-        self.env = Environment(
-            action_mode, "", obs_config, headless=headless)
-        self.env.launch()
 
-        self.task = self.env.get_task(task_class)
+        self.env = None
+        self.task = None
+
         self._obs = None
 
     def get_group(self):
@@ -54,8 +62,8 @@ class RLBenchBox(TaskInterface):
         :param n:
         :return:
         """
-        trajectory_files = ["datasets/rl_bench/%s/trajectory_%d.npy" % (self.task.get_name(), i) for i in range(n)]
-        context_files = ["datasets/rl_bench/%s/context_%d.npy" % (self.task.get_name(), i) for i in range(n)]
+        trajectory_files = ["datasets/rl_bench/%s/trajectory_%d.npy" % (self._name, i) for i in range(n)]
+        context_files = ["datasets/rl_bench/%s/context_%d.npy" % (self._name, i) for i in range(n)]
         try:
             return [LoadTrajectory(file) for file in trajectory_files], [np.load(file) for file in context_files]
         except:
@@ -92,6 +100,13 @@ class RLBenchBox(TaskInterface):
         return success, tot_reward
 
     def reset(self):
+        if self.env is None:
+            self.env = Environment(
+                self._action_mode, "", self._obs_config, headless=self._headless)
+            self.env.launch()
+
+            self.task = self.env.get_task(self._task_class)
+
         self._obs = self.task.reset()
 
 

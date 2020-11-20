@@ -1,4 +1,4 @@
-from rlbench.tasks import ReachTarget, CloseDrawer, WaterPlants
+from rlbench.tasks import ReachTarget, CloseDrawer, WaterPlants, PickUpCup, WipeDesk, UnplugCharger
 from core.rl_bench_box import RLBenchBox, Reacher2D
 from core.lab_connection import TCPTask
 
@@ -76,6 +76,33 @@ config = {
         "latent_dim": 3,
         "n_features": 20,
         "state_dim": 3,
+        "n_samples": 1000
+    },
+    "pick_up_cup": {
+        "task_class": PickUpCup,
+        "task_box": lambda headless: RLBenchBox(PickUpCup, 56, headless),
+        "n_cluster": 6,
+        "latent_dim": 3,
+        "n_features": 20,
+        "state_dim": 56,
+        "n_samples": 1000
+    },
+    "wipe_desk": {
+        "task_class": WipeDesk,
+        "task_box": lambda headless: RLBenchBox(WipeDesk, None, headless),
+        "n_cluster": 6,
+        "latent_dim": 3,
+        "n_features": 20,
+        "state_dim": None,
+        "n_samples": 1000
+    },
+    "unplug_charger": {
+        "task_class": UnplugCharger,
+        "task_box": lambda headless: RLBenchBox(UnplugCharger, None, headless),
+        "n_cluster": 6,
+        "latent_dim": 3,
+        "n_features": 20,
+        "state_dim": None,
         "n_samples": 1000
     }
 }
