@@ -67,7 +67,7 @@ config = {
         "latent_dim": 10,
         "n_features": 20,  # TODO: remove
         "state_dim": 84,  # TODO: remove
-        "n_samples": 1000
+        "n_samples": 200
     },
     "reach_target": {
         "task_class": ReachTarget,
@@ -76,7 +76,7 @@ config = {
         "latent_dim": 3,
         "n_features": 20,
         "state_dim": 3,
-        "n_samples": 1000
+        "n_samples": 200
     },
     "pick_up_cup": {
         "task_class": PickUpCup,
@@ -85,7 +85,7 @@ config = {
         "latent_dim": 3,
         "n_features": 20,
         "state_dim": 56,
-        "n_samples": 1000
+        "n_samples": 200
     },
     "wipe_desk": {
         "task_class": WipeDesk,
@@ -94,15 +94,15 @@ config = {
         "latent_dim": 3,
         "n_features": 20,
         "state_dim": 63,
-        "n_samples": 1000
+        "n_samples": 200
     },
     "unplug_charger": {
         "task_class": UnplugCharger,
-        "task_box": lambda headless: RLBenchBox(UnplugCharger, None, headless),
+        "task_box": lambda headless: RLBenchBox(UnplugCharger, 91, headless),
         "n_cluster": 6,
         "latent_dim": 3,
         "n_features": 20,
-        "state_dim": None,
-        "n_samples": 1000
+        "state_dim": 91,
+        "n_samples": 200
     }
 }
