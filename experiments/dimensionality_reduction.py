@@ -33,7 +33,8 @@ task_list = [
  "close_drawer", "water_plants", "pick_up_cup", "unplug_charger", "wipe_desk"
 ]
 
-latent_dims = range(1, 7)
+my_joint_latent_dims = range(1, 7)
+my_parameter_latent_dims = range(1, 40)
 
 
 for task_name in task_list:
@@ -54,7 +55,7 @@ for task_name in task_list:
         latent_dim_joint = []
         latent_dim_parameter = []
 
-        for latent_dim in latent_dims:
+        for latent_dim in my_joint_latent_dims:
 
             print("Task %s, Method %s, Latent dim %d" % (task_name, dr_id, latent_dim))
             dr = get_dr(dr_id, dr_class, latent_dim)
@@ -80,6 +81,7 @@ for task_name in task_list:
 
             print("[JOINT] mean squared error", par_res)
 
+        for latent_dim in my_parameter_latent_dims:
             dr = get_dr(dr_id, dr_class, latent_dim)
 
             parameter_reduction = ParameterReduction(space, dr)

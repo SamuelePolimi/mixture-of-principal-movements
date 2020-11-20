@@ -32,7 +32,9 @@ task_list = [
 
 latent_dims = range(1, 7)
 
-fig, axs = plt.subplots(5, 1)
+fig, axs = plt.subplots(3, 2)
+
+axs = np.ravel(axs)
 
 for ax, task_name in zip(axs, task_list):
 
@@ -45,7 +47,7 @@ for ax, task_name in zip(axs, task_list):
         result_parameter = file["result_parameter"]
         ax.plot(file["latent_dim_parameter"], result_parameter, label=dr_id + " parameter")
 
-    if task_name=="close_drawer":
+    if task_name == "close_drawer":
         ax.legend(loc="best")
 
 plt.show()
