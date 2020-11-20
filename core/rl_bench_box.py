@@ -15,6 +15,7 @@ _name_dicts = {
     "WaterPlants": "water_plants",
     "PickUpCup": "pick_up_cup",
     "UnplugCharger": "unplug_charger",
+    "WipeDesk": "wipe_desk",
 }
 
 

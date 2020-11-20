@@ -89,11 +89,11 @@ config = {
     },
     "wipe_desk": {
         "task_class": WipeDesk,
-        "task_box": lambda headless: RLBenchBox(WipeDesk, None, headless),
+        "task_box": lambda headless: RLBenchBox(WipeDesk, 63, headless),
         "n_cluster": 6,
         "latent_dim": 3,
         "n_features": 20,
-        "state_dim": None,
+        "state_dim": 63,
         "n_samples": 1000
     },
     "unplug_charger": {

@@ -17,7 +17,7 @@ def create_folder(path):
     try:
         os.makedirs(path)
     except OSError:
-        f_print("The directory exists. Files will be overwritten." % path, PTYPE.warning)
+        f_print("The directory exists. Files will be overwritten.", PTYPE.warning)
         return False
     else:
         f_print("Successfully created the directory %s." % path, PTYPE.ok_green)
