@@ -63,8 +63,8 @@ class RLBenchBox(TaskInterface):
         :param n:
         :return:
         """
-        trajectory_files = ["datasets/rl_bench/%s/trajectory_%d.npy" % (self._name, i) for i in range(n)]
-        context_files = ["datasets/rl_bench/%s/context_%d.npy" % (self._name, i) for i in range(n)]
+        trajectory_files = ["../datasets/rl_bench/%s/trajectory_%d.npy" % (self._name, i) for i in range(n)]
+        context_files = ["../datasets/rl_bench/%s/context_%d.npy" % (self._name, i) for i in range(n)]
         try:
             return [LoadTrajectory(file) for file in trajectory_files], [np.load(file) for file in context_files]
         except:
