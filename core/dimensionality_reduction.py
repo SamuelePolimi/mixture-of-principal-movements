@@ -184,7 +184,6 @@ class AE:
         self.losses = []
         for i in range(n_epochs):
             self.losses.append(self.epoch(X_tensor))
-            print(i)
 
     def encode(self, X):
         X_tensor = torch.FloatTensor(X).to(self.device)
