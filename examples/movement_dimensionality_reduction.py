@@ -31,16 +31,12 @@ reconstructed_trajectory = joint_reduction.reconstruct(movement, frequency=200, 
 
 print("[JOINT] mean squared error", np.mean((reconstructed_trajectory.values - trajectories[0].values)**2))
 
-#dr = ICA(n_components=3)
-#dr = PCA(n_components=3)
+# dr = ICA(n_components=3)
+# dr = PCA(n_components=3)
 # dr = PPCA(latent_dimension=3)
-<<<<<<< HEAD
-dr = MPPCA(latent_dimension=3, n_components=2)
-#dr = Autoencoder(n_components=3)
-=======
-# dr = MPPCA(latent_dimension=3, n_components=2)
+# dr = MPPCA(latent_dimension=3, n_components=3)
+
 dr = Autoencoder(n_components=3, batch_size=1, learning_rate=0.00735, hidden_dims=[10, 5], n_epochs=20)
->>>>>>> d3989ea2a8bc263d442bd4193e9522dacdf78aab
 
 parameter_reduction = ParameterReduction(space, dr)
 
