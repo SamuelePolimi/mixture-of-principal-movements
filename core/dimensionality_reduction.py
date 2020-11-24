@@ -148,7 +148,7 @@ class AENet(nn.Module):
         return self.decoder(z)
 
 class AE:
-    def __init__(self, n_components, hidden_dims=[5, 4], batch_size=64):
+    def __init__(self, n_components, hidden_dims=[5, 4], batch_size=64, learning_rate=1e-3):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         self.n_components = n_components
@@ -159,10 +159,13 @@ class AE:
         self.criterion = nn.MSELoss()
 
         self.batch_size = batch_size
+        self.lr = learning_rate
 
         self.losses = []
+        self.val_losses = []
 
     def epoch(self, X):
+        self.net.train()
         indices = torch.randperm(X.size()[0])
         ep_loss = 0
         for i in range(0, X.size()[0], self.batch_size):
@@ -176,14 +179,30 @@ class AE:
             ep_loss += loss.item()
         return ep_loss / X.shape[0]
 
-    def fit(self, X, n_epochs=10):
+    def validate(self, X_val):
+        self.net.eval()
+        indices = torch.randperm(X_val.size()[0])
+        ep_loss = 0
+        for i in range(0, X_val.size()[0], self.batch_size):
+            idx = indices[i:i+self.batch_size]
+            batch = X_val[idx]
+            reconstructions = self.net(batch)
+            loss = self.criterion(reconstructions, batch)
+            ep_loss += loss.item()
+        return ep_loss / X_val.shape[0]
+
+    def fit(self, X, X_val= None, n_epochs=10, verbose=False):
         self.net = AENet(X.shape[1], self.n_components, self.hidden_dims).to(self.device)
-        self.optimizer = optim.Adam(self.net.parameters())
+        self.optimizer = optim.Adam(self.net.parameters(), self.lr)
 
         X_tensor = torch.FloatTensor(X).to(self.device)
         self.losses = []
         for i in range(n_epochs):
             self.losses.append(self.epoch(X_tensor))
+            if X_val is not None:
+                self.val_losses.append(self.validate(torch.FloatTensor(X_val).to(self.device)))
+            if verbose:
+                print('Finished: ', i + 1)
 
     def encode(self, X):
         X_tensor = torch.FloatTensor(X).to(self.device)
@@ -199,8 +218,9 @@ class AE:
 class Autoencoder(DimensionalityReduction, AE):
     def __init__(self, *args, **kwargs):
         DimensionalityReduction.__init__(self)
-        AE.__init__(self, kwargs['n_components'])
+        AE.__init__(self, kwargs['n_components'], kwargs['hidden_dims'], kwargs['batch_size'], kwargs['learning_rate'])
         self.n_components = kwargs['n_components']
+        self.n_epochs = kwargs['n_epochs']
 
     def get_latent_dim(self):
         return self.n_components
@@ -210,7 +230,7 @@ class Autoencoder(DimensionalityReduction, AE):
 
     def fit(self, X: np.ndarray):
         self.n_features_ = X.shape[1]
-        return AE.fit(self, X)
+        return AE.fit(self, X, n_epochs=self.n_epochs)
 
     def reconstruct(self, latent, noise=False):
         return AE.decode(self, latent)
