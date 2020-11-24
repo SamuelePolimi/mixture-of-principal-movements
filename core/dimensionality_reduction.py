@@ -27,7 +27,7 @@ class ICA(DimensionalityReduction, FastICA):
     def fit(self, X: np.ndarray):
         return FastICA.fit(self, X)
 
-    def reconstruct(self, latent, noise=False):
+    def reconstruct(self, latent, minimum_error=True, noise=False):
         return self.inverse_transform(latent)
 
     def compress(self, observed: np.ndarray):
@@ -52,7 +52,7 @@ class PCA(DimensionalityReduction, ExternalPCA):
     def fit(self, X: np.ndarray):
         return ExternalPCA.fit(self, X)
 
-    def reconstruct(self, latent, noise=False):
+    def reconstruct(self, latent, minimum_error=True, noise=False):
         return self.inverse_transform(latent)
 
     def compress(self, observed: np.ndarray):
@@ -76,14 +76,14 @@ class PPCA(DimensionalityReduction, ExternalMPPCA):
         self.n_features_ = X.shape[1]
         return ExternalMPPCA.fit(self, X)
 
-    def reconstruct(self, latent, noise=False):
+    def reconstruct(self, latent, minimum_error=True, noise=False):
         return np.array([self.sample_from_latent(0, lat, noise=noise) for lat in latent])
 
     def compress(self, observed: np.ndarray):
         ret = []
         for obs in observed:
-            _, cluster, lat = self.reconstruction(obs, idx=np.array(range(self.get_observed_dim())))
-            ret.append(lat)
+            latent, cluster = self.get_latent(obs, use_mean_latent=True, noise=False)
+            ret.append(latent)
         return np.array(ret)
 
 

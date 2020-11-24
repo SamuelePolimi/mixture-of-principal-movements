@@ -19,8 +19,8 @@ space = ClassicSpace(task_box.get_group(), 20)
 #dr = ICA(n_components=3)
 #dr = PCA(n_components=3)
 # dr = PPCA(latent_dimension=3)
-#dr = MPPCA(latent_dimension=3, n_components=3)
-dr = Autoencoder(n_components=3)
+dr = MPPCA(latent_dimension=3, n_components=2)
+#dr = Autoencoder(n_components=3)
 
 joint_reduction = JointReduction(space, dr)
 
@@ -33,8 +33,8 @@ print("[JOINT] mean squared error", np.mean((reconstructed_trajectory.values - t
 #dr = ICA(n_components=3)
 #dr = PCA(n_components=3)
 # dr = PPCA(latent_dimension=3)
-# dr = MPPCA(latent_dimension=3, n_components=2)
-dr = Autoencoder(n_components=3)
+dr = MPPCA(latent_dimension=3, n_components=2)
+#dr = Autoencoder(n_components=3)
 
 parameter_reduction = ParameterReduction(space, dr)
 

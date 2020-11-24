@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 
 
-from core.dimensionality_reduction import PCA, ICA, PPCA, MPPCA
+from core.dimensionality_reduction import PCA, ICA, PPCA, MPPCA, Autoencoder
 from core.fancy_print import f_print, PTYPE
 
 
@@ -39,14 +39,14 @@ axs = np.ravel(axs)
 for ax, task_name in zip(axs, task_list):
 
     ax.set_title(task_name)
-    for dr_id, dr_class in zip(["ICA", "PCA", "PPCA"], [ICA, PCA, PPCA]):
+    for dr_id, dr_class in zip(["ICA", "PCA", "PPCA", "MPPCA", "AE"], [ICA, PCA, PPCA, MPPCA, Autoencoder]):
 
         file = np.load("results/dimensionality_reduction/%s/%s.npz" % (task_name, dr_id))
         result_joint = file["result_joint"]
         ax.plot(file["latent_dim_joint"], result_joint, label=dr_id + " joint")
         result_parameter = file["result_parameter"]
         ax.plot(file["latent_dim_parameter"], result_parameter, label=dr_id + " parameter")
-
+        ax.set_yscale('log')
     if task_name == "close_drawer":
         ax.legend(loc="best")
 

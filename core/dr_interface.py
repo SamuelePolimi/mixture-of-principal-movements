@@ -25,7 +25,7 @@ class DimensionalityReduction:
         """
         raise NotImplemented()
 
-    def reconstruct(self, latent, noise=False):
+    def reconstruct(self, latent, minimum_error=True, noise=False):
         """
         Given a latent representation, reconstruct the original value (by sampling - for probabilistic methods)
         :param latent:

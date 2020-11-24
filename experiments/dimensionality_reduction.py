@@ -7,7 +7,7 @@ from romi.movement_primitives import ClassicSpace
 from core.config import config
 from core.trajectory_analysis import correlation_joint_space, correlation_parameter_space
 from core.movement_reduction import JointReduction, ParameterReduction
-from core.dimensionality_reduction import PCA, ICA, PPCA, MPPCA
+from core.dimensionality_reduction import PCA, ICA, PPCA, MPPCA, Autoencoder
 from core.fancy_print import f_print, PTYPE
 
 
@@ -23,10 +23,12 @@ def create_folder(path):
 
 
 def get_dr(dr_id, dr_class, latent_dim):
-    if dr_id in ["ICA", "PCA"]:
+    if dr_id in ["ICA", "PCA", "AE"]:
         return dr_class(n_components=latent_dim)
-    else:
+    elif dr_id == "PPCA":
         return dr_class(latent_dimension=latent_dim)
+    elif dr_id == "MPPCA":
+        return dr_class(latent_dimension=latent_dim, n_components=3)
 
 
 task_list = [
@@ -48,7 +50,7 @@ for task_name in task_list:
 
     space = ClassicSpace(task_box.get_group(), 20)
 
-    for dr_id, dr_class in zip(["ICA", "PCA", "PPCA"], [ICA, PCA, PPCA]):
+    for dr_id, dr_class in zip(["MPPCA"], [MPPCA]):
 
         result_joint = []
         result_parameter = []
@@ -64,7 +66,7 @@ for task_name in task_list:
 
             joint_reduction.fit(train_trajectories)
 
-            create_folder("results/dimensionality_reduction/%s" % task_name)
+            create_folder("../results/dimensionality_reduction/%s" % task_name)
 
             partials = []
             for m_i in range(20):
@@ -82,6 +84,8 @@ for task_name in task_list:
             print("[JOINT] mean squared error", par_res)
 
         for latent_dim in my_parameter_latent_dims:
+
+            print("Task %s, Method %s, Latent dim %d" % (task_name, dr_id, latent_dim))
             dr = get_dr(dr_id, dr_class, latent_dim)
 
             parameter_reduction = ParameterReduction(space, dr)
@@ -103,7 +107,7 @@ for task_name in task_list:
             result_parameter.append(par_res)
             latent_dim_parameter.append(parameter_reduction.get_latent_dim())
 
-        np.savez("results/dimensionality_reduction/%s/%s.npz" % (task_name, dr_id),
+        np.savez("../results/dimensionality_reduction/%s/%s.npz" % (task_name, dr_id),
                  **{"result_joint": result_joint,
                   "latent_dim_joint": latent_dim_joint,
                   "result_parameter": result_parameter,
