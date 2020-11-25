@@ -21,7 +21,7 @@ space = ClassicSpace(task_box.get_group(), 20)
 # dr = PPCA(latent_dimension=3)
 # dr = MPPCA(latent_dimension=3, n_components=3)
 
-dr = Autoencoder(n_components=3, hidden_dims=[11, 8], learning_rate=0.00368, batch_size=112, n_epochs=20)
+dr = Autoencoder(n_components=3, hidden_dims=8, learning_rate=0.00368, batch_size=112, n_epochs=200)
 
 joint_reduction = JointReduction(space, dr)
 

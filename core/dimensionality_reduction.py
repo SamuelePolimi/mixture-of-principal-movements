@@ -121,21 +121,34 @@ class MPPCA(DimensionalityReduction, ExternalMPPCA):
 class AENet(nn.Module):
     def __init__(self, input_shape, n_components, hidden_dims=[30, 20]):
         super(AENet, self).__init__()
-        self.encoder = nn.Sequential(
-            nn.Linear(input_shape, hidden_dims[0]),
-            nn.ReLU(),
-            nn.Linear(hidden_dims[0], hidden_dims[1]),
-            nn.ReLU(),
-            nn.Linear(hidden_dims[1], n_components),
-            nn.ReLU()
-        )
-        self.decoder = nn.Sequential(
-            nn.Linear(n_components, hidden_dims[1]),
-            nn.ReLU(),
-            nn.Linear(hidden_dims[1], hidden_dims[0]),
-            nn.ReLU(),
-            nn.Linear(hidden_dims[0], input_shape)
-        )
+        if isinstance(hidden_dims, int):
+            self.encoder = nn.Sequential(
+                nn.Linear(input_shape, hidden_dims),
+                nn.ReLU(),
+                nn.Linear(hidden_dims, n_components),
+                nn.ReLU()
+            )
+            self.decoder = nn.Sequential(
+                nn.Linear(n_components, hidden_dims),
+                nn.ReLU(),
+                nn.Linear(hidden_dims, input_shape)
+            )
+        else:
+            self.encoder = nn.Sequential(
+                nn.Linear(input_shape, hidden_dims[0]),
+                nn.ReLU(),
+                nn.Linear(hidden_dims[0], hidden_dims[1]),
+                nn.ReLU(),
+                nn.Linear(hidden_dims[1], n_components),
+                nn.ReLU()
+            )
+            self.decoder = nn.Sequential(
+                nn.Linear(n_components, hidden_dims[1]),
+                nn.ReLU(),
+                nn.Linear(hidden_dims[1], hidden_dims[0]),
+                nn.ReLU(),
+                nn.Linear(hidden_dims[0], input_shape)
+            )
 
     def encode(self, X):
         return self.encoder(X)
@@ -191,16 +204,25 @@ class AE:
             ep_loss += loss.item()
         return ep_loss / X_val.shape[0]
 
-    def fit(self, X, X_val= None, n_epochs=10, verbose=False):
+    def fit(self, X, X_val= None, n_epochs=10, early_stopping=True, verbose=False):
         self.net = AENet(X.shape[1], self.n_components, self.hidden_dims).to(self.device)
         self.optimizer = optim.Adam(self.net.parameters(), self.lr)
+
+        if early_stopping:
+            es = EarlyStopping()
+            X_val = torch.FloatTensor(X[:int(0.1 * X.shape[0]), :]).to(self.device)
+            X = X[int(0.1 * X.shape[0]):, :]
 
         X_tensor = torch.FloatTensor(X).to(self.device)
         self.losses = []
         for i in range(n_epochs):
             self.losses.append(self.epoch(X_tensor))
             if X_val is not None:
-                self.val_losses.append(self.validate(torch.FloatTensor(X_val).to(self.device)))
+                mse = self.validate(X_val)
+                self.val_losses.append(mse)
+                if not es.check(mse):
+                    print('Early stopping criterion reached.')
+                    break
             if verbose:
                 print('Finished: ', i + 1)
 
@@ -213,6 +235,24 @@ class AE:
         z_tensor = torch.FloatTensor(z).to(self.device)
         reconstruction = self.net.decoder(z_tensor)
         return reconstruction.cpu().detach().numpy()
+
+
+class EarlyStopping:
+    def __init__(self, patience=5, delta=0.1):
+        self.patience = patience
+        self.counter = 0
+        self.best = 1
+        self.delta = delta
+
+    def check(self, error):
+        continue_training = True
+        if error < self.best - self.delta * self.best:
+            self.counter = 0
+        else:
+            self.counter += 1
+        if self.counter >= self.patience:
+            continue_training = False
+        return continue_training
 
 
 class Autoencoder(DimensionalityReduction, AE):
