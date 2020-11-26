@@ -86,7 +86,6 @@ class PPCA(DimensionalityReduction, ExternalMPPCA):
             ret.append(latent)
         return np.array(ret)
 
-
 class MPPCA(DimensionalityReduction, ExternalMPPCA):
     """
     TODO: understand if sk-learn is actually implementing PPCA instead of PCA
@@ -108,12 +107,21 @@ class MPPCA(DimensionalityReduction, ExternalMPPCA):
         return ExternalMPPCA.fit(self, X)
 
     def reconstruct(self, latent, noise=False):
-        return np.array([self.sample_from_latent(int(lat[0]), lat[1:], noise=noise) for lat in latent])
+        return np.array([self.sample_from_latent(self.get_proper_cluster_id(lat[0]), lat[1:], noise=noise)
+                         for lat in latent])
+
+    def get_proper_cluster_id(self, cluster):
+        ret = int(np.round(cluster))
+        if ret < 0:
+            ret = 0
+        elif ret > self.n_components - 1:
+            ret = self.n_components - 1
+        return ret
 
     def compress(self, observed: np.ndarray):
         ret = []
         for obs in observed:
-            _, cluster, lat = self.reconstruction(obs, idx=np.array(range(self.get_observed_dim())))
+            lat, cluster = self.get_latent(obs, use_mean_latent=True, noise=False)
             ret.append(np.concatenate([np.array([cluster]), lat]))
         return np.array(ret)
 
@@ -159,6 +167,7 @@ class AENet(nn.Module):
     def forward(self, X):
         z = self.encoder(X)
         return self.decoder(z)
+
 
 class AE:
     def __init__(self, n_components, hidden_dims=[5, 4], batch_size=64, learning_rate=1e-3):
