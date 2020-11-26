@@ -1,5 +1,6 @@
 from rlbench.tasks import ReachTarget, CloseDrawer, WaterPlants, PickUpCup, WipeDesk, UnplugCharger
 from core.rl_bench_box import RLBenchBox, Reacher2D
+from core.human_box import MoCap
 from core.lab_connection import TCPTask
 
 config = {
@@ -103,6 +104,14 @@ config = {
         "latent_dim": 3,
         "n_features": 20,
         "state_dim": 91,
+        "n_samples": 200
+    },
+    "mocap_143": {
+        "task_box": lambda headless: MoCap("143", headless),
+        "n_cluster": 12,
+        "latent_dim": 3,
+        "n_features": 20,
+        "state_dim": 0,
         "n_samples": 200
     }
 }

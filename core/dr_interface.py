@@ -17,6 +17,14 @@ class DimensionalityReduction:
     def get_latent_dim(self):
         raise NotImplemented()
 
+    def get_n_parameters(self):
+        """
+        Every dimensionality redutction technique estimate some parameters to perform the two projections.
+        How many parameters need the method?
+        :return:
+        """
+        raise NotImplemented()
+
     def compress(self, observed: np.ndarray):
         """
 

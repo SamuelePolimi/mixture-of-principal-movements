@@ -23,20 +23,31 @@ def create_folder(path):
 
 
 def get_dr(dr_id, dr_class, latent_dim):
-    if dr_id in ["ICA", "PCA", "AE"]:
+    if dr_id in ["ICA", "PCA"]:
         return dr_class(n_components=latent_dim)
+    elif dr_id == "AE":
+        return dr_class(n_components=latent_dim, hidden_dims=[10, 5], learning_rate=0.0035, batch_size=128, n_epochs=20)
     elif dr_id == "PPCA":
         return dr_class(latent_dimension=latent_dim)
     elif dr_id == "MPPCA":
         return dr_class(latent_dimension=latent_dim, n_components=3)
+    elif dr_id == "MPPCA-3":
+        return dr_class(latent_dimension=latent_dim, n_components=3)
+    elif dr_id == "MPPCA-6":
+        return dr_class(latent_dimension=latent_dim, n_components=6)
+    elif dr_id == "MPPCA-9":
+        return dr_class(latent_dimension=latent_dim, n_components=9)
+    elif dr_id == "MPPCA-12":
+        return dr_class(latent_dimension=latent_dim, n_components=12)
 
 
 task_list = [
- "close_drawer", "water_plants", "pick_up_cup", "unplug_charger", "wipe_desk"
+ #"close_drawer",
+    "water_plants", "pick_up_cup", "unplug_charger", "wipe_desk", "mocap_143"
 ]
 
 my_joint_latent_dims = range(1, 7)
-my_parameter_latent_dims = range(1, 40)
+my_parameter_latent_dims = range(1, 40)         # just to don't have problems. was range(1, 40)
 
 
 for task_name in task_list:
@@ -50,7 +61,7 @@ for task_name in task_list:
 
     space = ClassicSpace(task_box.get_group(), 20)
 
-    for dr_id, dr_class in zip(["MPPCA"], [MPPCA]):
+    for dr_id, dr_class in zip(["MPPCA-3", "MPPCA-6", "MPPCA-9", "MPPCA-12"], [MPPCA]*4):
 
         result_joint = []
         result_parameter = []

@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from rlbench.environment import Environment
 from rlbench.action_modes import ArmActionMode, ActionMode
@@ -9,6 +10,8 @@ from romi.movement_primitives import ClassicSpace, MovementPrimitive, LearnTraje
 from romi.groups import Group
 from romi.trajectory import NamedTrajectory, LoadTrajectory
 
+
+_dirname = os.path.dirname(__file__)
 _name_dicts = {
     "ReachTarget": "reach_target",
     "CloseDrawer": "close_drawer",
@@ -63,8 +66,11 @@ class RLBenchBox(TaskInterface):
         :param n:
         :return:
         """
-        trajectory_files = ["../datasets/rl_bench/%s/trajectory_%d.npy" % (self._name, i) for i in range(n)]
-        context_files = ["../datasets/rl_bench/%s/context_%d.npy" % (self._name, i) for i in range(n)]
+
+        trajectory_files = [os.path.join(_dirname, "../datasets/rl_bench/%s/trajectory_%d.npy" % (self._name, i))
+                            for i in range(n)]
+        context_files = [os.path.join(_dirname, "../datasets/rl_bench/%s/context_%d.npy" % (self._name, i))
+                         for i in range(n)]
         try:
             return [LoadTrajectory(file) for file in trajectory_files], [np.load(file) for file in context_files]
         except:
