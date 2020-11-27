@@ -1,0 +1,43 @@
+Trial,35,49,74,120,143
+1,walk,walk,stiff walk ,Alien Turn,Run
+2,walk,"jump up and down, hop on one foot",stiff walk ,Gorilla,Run to Stop
+3,walk,"jump up and down, hop on one foot",kick,Mickey cast spell,Start to Run
+4,walk,"run, leap",kick,Mickey Conducting,Run Figure 8
+5,walk,"run, leap",kick,Mickey Dance,Jumping Distances
+6,walk,cartwheel,kick,Mickey Dance,Jumping Heights
+7,walk,cartwheel,lifting,Mickey Dance,Jumping Sideways
+8,walk,cartwheels,lifting,Mickey sneaky walk,Jumping Twists
+9,walk,"dance - arms held high, side arabesque",No description,Mickey sneaking walk,Jumping Twists
+10,walk,"dance - fold in from side arabesque, curl inwards",peeping,Mickey sneaking walk,Walk And Pick up Tool Box
+11,walk,"dance - fold in from side arabesque, curl inwards",peeping,Mickey sneaking walk,Walk And Pick up Box
+12,walk,"dance - lean forward, bring back leg forward, arching arms",thinker,Mickey sneaking walk,Walk And Pick up Toolbox
+13,walk,"dance - fold in from side arabesque, curl inwards",Range of motion ,Mickey sneaking walk,Walk and Pick up Laundry Basket
+14,walk,"dance - lean forward, bring back leg forward, arching arms",slope 1 ,Mickey sneaking walk,Walk And Step Over
+15,walk,"static dance pose - folded in, head lowered, leg bent",slope 1 ,Mickey Surprised,Walk And Step Over
+16,walk,"dance - fold in from side arabesque, curl inwards",slope 2 ,Mickey Surprised,Walk And Step Over
+17,run/jog,"dance - lean forward, bring back leg forward, arching arms",slope 2 ,Mickey Walk,Walk Up Stairs And Over
+18,run/jog,"balance on one leg, outstretched arms",slope 3 ,Mickey Walk,Sit Down And Get Up
+19,run/jog,"balance on one leg, outstretched arms",slope 3 ,Walk slow,Sit On Stool And Get Up
+20,run/jog,"balance on one leg, outstretched arms",stiff walk ,Walk,Catch And Throw
+21,run/jog,"acrobatics - spin/twirl, hang on ropes",,Robot,Range Of Motion
+22,run/jog,"dance - lean back on bent leg, balance, bend elbow by ear",,Zombie,Catch And Throw Football
+23,run/jog,,,,Punching
+24,run/jog,,,,Kicking
+25,run/jog,,,,Waving
+26,run/jog,,,,Washing Window
+27,navigate around obstacles,,,,Washing Window
+28,walk,,,,"Sweeping, Push Broom"
+29,walk,,,,Pacing
+30,walk,,,,Stretch And Yawn
+31,walk,,,,Hopscotch
+32,walk,,,,Walk
+33,walk,,,,Peek A Boo
+34,walk,,,,Chicken Dance
+35,,,,,Macarena Dance
+36,,,,,Airplane
+37,,,,,Climb Up And Down Ladder
+38,,,,,Walk Digital 8
+39,,,,,Walk Backwards
+40,,,,,Walk Sideways
+41,,,,,Sneak
+42,,,,,Run
