@@ -42,8 +42,12 @@ def get_dr(dr_id, dr_class, latent_dim):
 
 
 task_list = [
- #"close_drawer",
-    "water_plants", "pick_up_cup", "unplug_charger", "wipe_desk", "mocap_143"
+    "close_drawer",
+    "water_plants",
+    "pick_up_cup",
+    "unplug_charger",
+    "wipe_desk",
+    "mocap_143"
 ]
 
 my_joint_latent_dims = range(1, 7)
