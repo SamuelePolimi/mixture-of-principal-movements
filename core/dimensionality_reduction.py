@@ -86,6 +86,7 @@ class PPCA(DimensionalityReduction, ExternalMPPCA):
             ret.append(latent)
         return np.array(ret)
 
+
 class MPPCA(DimensionalityReduction, ExternalMPPCA):
     """
     TODO: understand if sk-learn is actually implementing PPCA instead of PCA
@@ -108,7 +109,7 @@ class MPPCA(DimensionalityReduction, ExternalMPPCA):
 
     def reconstruct(self, latent, noise=False):
         return np.array([self.sample_from_latent(self.get_proper_cluster_id(lat[0]), lat[1:], noise=noise)
-                         for lat in latent])
+                             for lat in latent])
 
     def get_proper_cluster_id(self, cluster):
         ret = int(np.round(cluster))
