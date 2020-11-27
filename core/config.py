@@ -106,12 +106,12 @@ config = {
         "state_dim": 91,
         "n_samples": 200
     },
-    "mocap_143": {
-        "task_box": lambda headless: MoCap("143", headless),
+    "walk": {
+        "task_box": lambda headless: MoCap("walk", headless),
         "n_cluster": 12,
         "latent_dim": 3,
         "n_features": 20,
         "state_dim": 0,
-        "n_samples": 200
+        "n_samples": 20
     }
 }
