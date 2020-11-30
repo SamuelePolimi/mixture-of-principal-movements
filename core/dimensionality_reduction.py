@@ -130,7 +130,15 @@ class MPPCA(DimensionalityReduction, ExternalMPPCA):
 class AENet(nn.Module):
     def __init__(self, input_shape, n_components, hidden_dims=[30, 20]):
         super(AENet, self).__init__()
-        if isinstance(hidden_dims, int):
+        if hidden_dims is None:
+            self.encoder = nn.Sequential(
+                nn.Linear(input_shape, n_components),
+                nn.ReLU()
+            )
+            self.decoder = nn.Sequential(
+                nn.Linear(n_components, input_shape)
+            )
+        elif isinstance(hidden_dims, int):
             self.encoder = nn.Sequential(
                 nn.Linear(input_shape, hidden_dims),
                 nn.ReLU(),
