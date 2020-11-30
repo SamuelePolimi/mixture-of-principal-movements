@@ -1,6 +1,6 @@
 import numpy as np
 from mppca.mixture_ppca import MPPCA as ExternalMPPCA
-from sklearn.decomposition import PCA as ExternalPCA, FastICA
+from sklearn.decomposition import PCA as ExternalPCA, FastICA, FactorAnalysis
 
 from .dr_interface import DimensionalityReduction
 
@@ -59,6 +59,31 @@ class PCA(DimensionalityReduction, ExternalPCA):
         return self.transform(observed)
 
 
+class FA(DimensionalityReduction, FactorAnalysis):
+    """
+    TODO: understand if sk-learn is actually implementing PPCA instead of PCA
+    """
+
+    def __init__(self, *args, **kwargs):
+        DimensionalityReduction.__init__(self)
+        FactorAnalysis.__init__(self, *args, **kwargs)
+
+    def get_latent_dim(self):
+        return self.n_components
+
+    def get_observed_dim(self):
+        return self.n_features_
+
+    def fit(self, X: np.ndarray):
+        return FactorAnalysis.fit(self, X)
+
+    def reconstruct(self, latent, minimum_error=True, noise=False):
+        return latent @ self.components_ + self.mean_
+
+    def compress(self, observed: np.ndarray):
+        return self.transform(observed)
+
+
 class PPCA(DimensionalityReduction, ExternalMPPCA):
 
     def __init__(self, *args, **kwargs):
@@ -78,6 +103,34 @@ class PPCA(DimensionalityReduction, ExternalMPPCA):
 
     def reconstruct(self, latent, minimum_error=True, noise=False):
         return np.array([self.sample_from_latent(0, lat, noise=noise) for lat in latent])
+
+    def get_conditioned_sample(self, observed_values, indexes, noise=False):
+
+        log_pi_lat = self.log_pi
+        mu_lats = np.zeros((self.n_components, self.latent_dimension))
+        cov_lats = [np.eye(self.latent_dimension) for i in range(self.n_components)]
+
+        r, p = self.get_responsabilities(observed_values, indexes, log_pi_lat, mu_lats, cov_lats)
+
+        tot = 0.
+        for cluster in range(self.n_components):
+            cov_lat = cov_lats[cluster]
+
+            W = self.linear_transform[cluster]
+            mean = self.means[cluster]
+            obs_dimension = mean.shape[0]
+            sigma_sq = self.sigma_squared[cluster]
+
+            cov_b = W @ cov_lat @ W.T + sigma_sq * np.eye(obs_dimension)
+
+            # we regulize with sigma... i.e., the context we assumed is observed with the presence of noise, but
+            # the reconstruction will be noiseless
+            idx_query = [i for i in range(mean.shape[0]) if i not in indexes]
+            mu_a, cov_a = self.conditional(mean, cov_b, observed_values, indexes, idx_query)
+
+            tot += np.exp(r[cluster]) * mu_a
+
+        return tot
 
     def compress(self, observed: np.ndarray):
         ret = []
@@ -110,6 +163,34 @@ class MPPCA(DimensionalityReduction, ExternalMPPCA):
     def reconstruct(self, latent, noise=False):
         return np.array([self.sample_from_latent(self.get_proper_cluster_id(lat[0]), lat[1:], noise=noise)
                              for lat in latent])
+
+    def get_conditioned_sample(self, observed_values, indexes, noise=False):
+
+        log_pi_lat = self.log_pi
+        mu_lats = np.zeros((self.n_components, self.latent_dimension))
+        cov_lats = [np.eye(self.latent_dimension) for i in range(self.n_components)]
+
+        r, p = self.get_responsabilities(observed_values, indexes, log_pi_lat, mu_lats, cov_lats)
+
+        tot = 0.
+        for cluster in range(self.n_components):
+            cov_lat = cov_lats[cluster]
+
+            W = self.linear_transform[cluster]
+            mean = self.means[cluster]
+            obs_dimension = mean.shape[0]
+            sigma_sq = self.sigma_squared[cluster]
+
+            cov_b = W @ cov_lat @ W.T + sigma_sq * np.eye(obs_dimension)
+
+            # we regulize with sigma... i.e., the context we assumed is observed with the presence of noise, but
+            # the reconstruction will be noiseless
+            idx_query = [i for i in range(mean.shape[0]) if i not in indexes]
+            mu_a, cov_a = self.conditional(mean, cov_b, observed_values, indexes, idx_query)
+
+            tot += np.exp(r[cluster]) * mu_a
+
+        return tot
 
     def get_proper_cluster_id(self, cluster):
         ret = int(np.round(cluster))
